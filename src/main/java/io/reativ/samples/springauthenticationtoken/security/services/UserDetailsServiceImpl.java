@@ -1,6 +1,6 @@
 package io.reativ.samples.springauthenticationtoken.security.services;
 
-import io.reativ.samples.springauthenticationtoken.security.models.User;
+import io.reativ.samples.springauthenticationtoken.security.models.entities.User;
 import io.reativ.samples.springauthenticationtoken.security.repositories.UsersRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

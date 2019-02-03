@@ -2,6 +2,8 @@ package io.reativ.samples.springauthenticationtoken.security.filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import io.reativ.samples.springauthenticationtoken.core.http.responses.errors.UnauthorizedResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,16 +33,30 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(request, response);
+        try {
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+
+            if (authentication != null) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                chain.doFilter(request, response);
+            }
+
+        } catch (JWTVerificationException e) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            response.getWriter().write(new UnauthorizedResponse(e.getMessage()).asJson());
+            response.getWriter().flush();
+            response.getWriter().close();
+        }
+
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws JWTVerificationException {
         String token = request.getHeader(HEADER_STRING);
 
         if (token != null) {
-
             String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
@@ -49,8 +65,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
             }
-
-            return null;
         }
 
         return null;

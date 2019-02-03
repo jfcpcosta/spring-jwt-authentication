@@ -1,4 +1,4 @@
-package io.reativ.samples.springauthenticationtoken.security.models;
+package io.reativ.samples.springauthenticationtoken.security.models.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 @Entity
 public class User implements UserDetails {
@@ -20,6 +21,8 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
+
+    private Date lastLogin;
 
     public long getId() {
         return id;
@@ -39,6 +42,14 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package io.reativ.samples.springauthenticationtoken.security.controllers;
 
-import io.reativ.samples.springauthenticationtoken.security.models.User;
+import io.reativ.samples.springauthenticationtoken.security.models.entities.User;
 import io.reativ.samples.springauthenticationtoken.security.repositories.UsersRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
